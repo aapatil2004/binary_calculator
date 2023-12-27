@@ -272,18 +272,19 @@ node *sub(node *l1, node *l2) {
 
 
 node *mul(node *l1, node *l2) {
-    node *l5 = NULL;
     node *l6 = NULL;
     node *l7 = NULL;
 
     while (l2) {
         node *temp = l1;
         int carry = 0;
-
         while (temp) 
         {
+   
+
             if (temp->data == -1) 
             {
+                temp=temp->next;
                 continue;
             } 
             else 
@@ -293,19 +294,12 @@ node *mul(node *l1, node *l2) {
 
                 if (temp->next) 
                 {
-                    	insertright(&l6, prod % 10);
-                	if (carry > 0)
-                	{
-                    		insertright(&l6, prod / 10);
-                	}
+                    insertright(&l6, prod % 10);
                 } 
                 else 
                 {
-                    	insertright(&l7, prod % 10);
-                    	if (carry > 0)
-                	{
-                    		insertright(&l7, prod / 10);
-                	}
+                    insertright(&l7, prod % 10);
+                    	
                 }
             }
             temp = temp->next;
@@ -321,10 +315,13 @@ node *mul(node *l1, node *l2) {
     node * q = l7;
     while(p->prev)
     {
+
+        printf("3");
     	p=p->prev;
     }
     while(q->prev)
     {
+        printf("4");
     	q=q->prev;
     }
     return add(p, q);
@@ -377,16 +374,15 @@ int main() {
     l3 = add(l1, l2);
     printf("\n\nAddition Result (l3): ");
     displayLR(l3);
-
     init(&l4);
     l4 = sub(l1, l2);
     printf("\n\nSubtraction Result (l4): ");
     displayLR(l4);
     
-    /*init(&l5);
+    init(&l5);
     l5 = mul(l1, l2);
     printf("\n\nMultiplication Result (l5): ");
-    displayLR(l5);*/
+    displayLR(l5);
     
 
     return 0;
