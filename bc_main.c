@@ -169,167 +169,196 @@ node *add(node *l1, node *l2) {
     return l3;
 }
 
-node *sub(node *l1, node *l2) {
+node *sub(node *l1, node *l2)
+{
     node *l4 = NULL;
     node *l5, *l6;
-    l5 = l1;
-    l6 = l2;
-    while (l5 && l5->next) {
-        l5 = l5->next;
-    }
-    while (l6 && l6->next) {
-        l6 = l6->next;
+    l5=l1;
+    l6=l2;
+    while(l5->next && l6->next)
+    {
+    	l5=l5->next;
+    	l6=l6->next;
     }
     int borrow = 0;
-
-    while (l1 || l2) {
-        if (l1 == NULL || l2 == NULL) {
-            // Handle the case where either l1 or l2 is NULL
-            break;
-        } else if (l5->data < l6->data) {
-            while (l1 || l2) {
-                if (l1 == NULL || l2 == NULL) {
-                    // Handle the case where either l1 or l2 is NULL
-                    break;
-                }
-                if (l1->data == -1 || l2->data == -1) {
-                    insert_decimal_point(&l4);
-                    l1 = l1->next;
-                    l2 = l2->next;
-                } else if (l2->data + borrow > l1->data) {
-                    int diff = (l2->data + borrow) - l1->data + 10;
-                    insertleft(&l4, diff);
-                    l1 = l1->next;
-                    l2 = l2->next;
-                    if (l2 && l2->data == -1) {
-                        insert_decimal_point(&l4);
-                        l1 = l1->next;
-                        if (l2) {
-                            l2 = l2->next;
-                            if (l2) {
-                                l2->data = l2->data - 1;
-                            }
-                        }
-                    } else if (l2) {
-                        l2->data = l2->data - 1;
-                    }
-                    borrow = 1;
-                } else {
-                    insertleft(&l4, l2->data + borrow - l1->data);
-                    l2 = l2->next;
-                    l1 = l1->next;
-                    borrow = 0;
-                }
+    if(l5->next || l5->data >= l6->data)
+    {
+    	while (l1 && l2)
+    	{
+    	    if (l1->data == -1 && l2->data ==-1)
+    	    {
+        	insert_decimal_point(&l4);
+        	l1 = l1->next;
+        	l2 = l2->next;
+    	    } 
+        		
+            else if (l1->data >= l2->data)
+        	{
+            	insertleft(&l4, l1->data - l2->data);
+            	l1 = l1->next;
+            	l2 = l2->next;
+        	}
+            else if (l1->data < l2->data)
+            {
+            	borrow = l1->data - l2->data + 10;
+            	insertleft(&l4, borrow);
+            	l1 = l1->next;
+            	l2 = l2->next;
+    	    	if (l1->data ==-1 )
+    	    	{
+    	    		insert_decimal_point(&l4);
+        		l1 = l1->next;
+        		l2 = l2->next;
+        		l1->data = l1->data -1;
+            	}
+            	else if (l1 != NULL) 
+            	{
+        		l1->data = l1->data - 1;
+    	    	}
             }
-            insert_negative(&l4);
-            return l4;
         }
-        if (l1->data == -1 || l2->data == -1) {
-            insert_decimal_point(&l4);
-            l1 = l1->next;
-            l2 = l2->next;
-        } else if (l1->data + borrow >= l2->data) {
-            insertleft(&l4, l1->data + borrow - l2->data);
-            l1 = l1->next;
-            l2 = l2->next;
-            borrow = 0;
-        } else {
-            int diff = (l1->data + borrow) - l2->data + 10;
-            insertleft(&l4, diff);
-            l1 = l1->next;
-            l2 = l2->next;
-            borrow = 1;
+        while(l1)
+        {
+        	if(l5->data < l6->data && l1->next==NULL)
+        	{
+        		insertleft(&l4, l1->data);
+        	}
+        	else
+        	{
+        		insertleft(&l4, l1->data);
+        	}
+        	l1=l1->next;
         }
-    }
-
-    while (l1) {
-        if (l1->data == -1) {
-            insert_decimal_point(&l4);
-        } else {
-            insertleft(&l4, l1->data);
+        return l4;
+   }
+    	
+   else if(l6->next || l5->data < l6->data || (l5->prev->data < l6->prev->data && l5->data==l6->data))
+   {
+    while (l1 && l2)
+    {
+        	if (l1 == NULL || l2 == NULL)
+       		{
+            			// Handle the case where either l1 or l2 is NULL
+            	break;
+        	}
+    		if (l1->data == -1 || l2->data ==-1)
+    		{
+        		insert_decimal_point(&l4);
+        		l1 = l1->next;
+        		l2 = l2->next;
+    		} 
+    				
+    		else if (l2->data >= l1->data)
+        	{
+            		insertleft(&l4, l2->data - l1->data);
+           		l2 = l2->next;
+        		l1 = l1->next;
+        	}
+        	else if (l2->data < l1->data)
+        	{
+           		borrow = l2->data - l1->data + 10;
+            		insertleft(&l4, borrow);
+            		l1 = l1->next;
+           	        l2 = l2->next;
+    	  		if (l2->data ==-1 )
+    	    		{
+    	    			insert_decimal_point(&l4);
+        			l1 = l1->next;
+        			l2 = l2->next;
+        			l2->data = l2->data -1;
+            		}
+            		else if (l2 != NULL) 
+            		{
+        			l2->data = l2->data - 1;
+    	    		}
+        	}
+    	}
+    	while(l2)
+        {
+        	if(l5->data > l6->data && l2->next==NULL)
+        	{
+        		insertleft(&l4, l2->data);
+        	}
+        	else
+        	{
+        		insertleft(&l4, l2->data);
+        	}
+        	l2=l2->next;
         }
-        l1 = l1->next;
-    }
-
-    while (l2) {
-        if (l2->data == -1) {
-            insert_decimal_point(&l4);
-        } else {
-            int diff = l2->data - borrow;
-            if (diff < 0) {
-                diff += 10;
-            }
-            insertleft(&l4, diff);
-            insert_negative(&l4);
-            borrow = 1;
-        }
-        l2 = l2->next;
-    }
-
+        insert_negative(&l4);
+    	
+    			
     return l4;
+    }
+    
+    	
 }
 
 
 
 node *mul(node *l1, node *l2) {
-    node *l6 = NULL;
-    node *l7 = NULL;
+    node *l8 = NULL;
+    node *l9 = NULL;
 
+    int carry = 0;
     while (l2) {
         node *temp = l1;
-        int carry = 0;
+
         while (temp) 
         {
-   
-
             if (temp->data == -1) 
             {
                 temp=temp->next;
                 continue;
+            }
+            else if(l2->data == -1)
+            {
+            	l2=l2->next;
+            	continue;
             } 
             else 
             {
                 int prod = (temp->data * l2->data) + carry;
                 carry = prod / 10;
 
-                if (temp->next) 
+                if (l2->next) 
                 {
-                    insertright(&l6, prod % 10);
+                    	insertright(&l8, prod % 10);
+                    	
+                	
                 } 
                 else 
                 {
-                    insertright(&l7, prod % 10);
+                    	insertright(&l9, prod % 10);
                     	
                 }
-            }
             temp = temp->next;
+            }
         }
-        insertright(&l7, 0);
-        l2 = l2->next;
-        if(l2 && l2->data == -1)
+        if(l2->next)
         {
-        	continue;
+        	insertright(&l9, 0);
         }
+        l2 = l2->next;
     }
-    node * p = l6;
-    node * q = l7;
-    while(p->prev)
+    while(l8->prev)
     {
+    	l8=l8->prev;
+    }
+    while(l9->prev)
+    {
+    	l9=l9->prev;
+    }
+    if (carry > 0) {
+        insertright(&l9, carry);
+    }
 
-        printf("3");
-    	p=p->prev;
-    }
-    while(q->prev)
-    {
-        printf("4");
-    	q=q->prev;
-    }
-    return add(p, q);
+    return add(l8, l9);
 }
 
 
 int main() {
-    node *l1, *l2, *l3, *l4, *l5;
+    node *l1, *l2, *l3, *l4, *l7;
     init(&l1);
     int d1, d2, num;
     printf("Enter the number of digits before decimal for l1: ");
@@ -370,21 +399,24 @@ int main() {
     printf("\nDisplaying l2: ");
     displayRL(l2);
 
+    init(&l7);
+    l7 = mul(l1, l2);
+    printf("\n\nMultiplication Result (l5): ");
+    displayLR(l7);
+    
     init(&l3);
     l3 = add(l1, l2);
     printf("\n\nAddition Result (l3): ");
     displayLR(l3);
+
     init(&l4);
     l4 = sub(l1, l2);
     printf("\n\nSubtraction Result (l4): ");
     displayLR(l4);
     
-    init(&l5);
-    l5 = mul(l1, l2);
-    printf("\n\nMultiplication Result (l5): ");
-    displayLR(l5);
+    
+    
     
 
     return 0;
 }
-
