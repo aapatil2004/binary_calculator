@@ -81,6 +81,18 @@ void insert_negative(node **head) {
     return;
 }
 
+int count (node **head)
+{
+	int count = 0;
+	node * p = *head;
+	while(p->data != -1)
+	{
+		p=p->next;
+		count++;
+	}
+	return count;
+}
+
 void displayLR(node * head) {
     node *p;
     p = head;
@@ -181,7 +193,7 @@ node *sub(node *l1, node *l2)
     	l6=l6->next;
     }
     int borrow = 0;
-    if(l5->next || l5->data >= l6->data)
+    if(l5->next || l5->data > l6->data)
     {
     	while (l1 && l2)
     	{
@@ -232,7 +244,7 @@ node *sub(node *l1, node *l2)
         return l4;
    }
     	
-   else if(l6->next || l5->data < l6->data || (l5->prev->data < l6->prev->data && l5->data==l6->data))
+   else if(l6->next || l5->data <= l6->data || (l5->prev->data < l6->prev->data && l5->data==l6->data))
    {
     while (l1 && l2)
     {
@@ -335,11 +347,12 @@ node *mul(node *l1, node *l2) {
             temp = temp->next;
             }
         }
-        if(l2->next)
-        {
-        	insertright(&l9, 0);
-        }
-        l2 = l2->next;
+        	if(l2->next)
+       	        {
+        		insertright(&l9, 0);
+        	}
+        	l2 = l2->next;
+        
     }
     while(l8->prev)
     {
