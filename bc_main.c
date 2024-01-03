@@ -24,7 +24,6 @@ void insertleft(node **head, int d) {
         (*head)->prev = newnode;
     }
     *head = newnode;
-    return;
 }
 
 void insertright(node **head, int d) {
@@ -80,6 +79,24 @@ void insert_negative(node **head) {
     *head = newnode;
     return;
 }
+
+
+node *reverse(node *head) {
+    node *prev = NULL;
+    node *current = head;
+    node *next = NULL;
+
+    while (current != NULL) {
+        next = current->next;
+        current->next = prev;
+        current->prev = next;  // Update the prev pointer in a doubly linked list
+        prev = current;
+        current = next;
+    }
+
+    return prev;  // New head of the reversed list
+}
+
 
 int count (node **head)
 {
@@ -309,65 +326,57 @@ node *sub(node *l1, node *l2)
 
 
 node *mul(node *l1, node *l2) {
-    node *l8 = NULL;
-    node *l9 = NULL;
+    node *result = NULL;
+    node *decimalresult = NULL;
+    node *n2 = l2;
+    node *new_temp = NULL; // Declare new_temp outside the loop
 
-    int carry = 0;
-    while (l2) {
-        node *temp = l1;
+    while (n2) {
+        int carry = 0;
+        node *temp = new_temp;
+        node *n1 = l1;
 
-        while (temp) 
-        {
-            if (temp->data == -1) 
-            {
-                temp=temp->next;
-                continue;
-            }
-            else if(l2->data == -1)
-            {
-            	l2=l2->next;
-            	continue;
-            } 
-            else 
-            {
-                int prod = (temp->data * l2->data) + carry;
+        while (n1) {
+            if (n1->data == -1) {
+                n1 = n1->next;
+            } else if (n2->data == -1) {
+                n2 = n2->next;
+            } else {
+                int prod = n1->data * n2->data + carry;
                 carry = prod / 10;
-
-                if (l2->next) 
-                {
-                    	insertright(&l8, prod % 10);
-                    	
-                	
-                } 
-                else 
-                {
-                    	insertright(&l9, prod % 10);
-                    	
-                }
-            temp = temp->next;
+                insertright(&temp, prod % 10);
+                n1 = n1->next;
             }
         }
-        	if(l2->next)
-       	        {
-        		insertright(&l9, 0);
-        	}
-        	l2 = l2->next;
-        
-    }
-    while(l8->prev)
-    {
-    	l8=l8->prev;
-    }
-    while(l9->prev)
-    {
-    	l9=l9->prev;
-    }
-    if (carry > 0) {
-        insertright(&l9, carry);
+
+        while (carry != 0) {
+            insertright(&temp, carry % 10);
+            carry /= 10;
+        }
+
+        while (temp->prev) {
+            temp = temp->prev;
+        }
+
+        while (result && result->prev) {
+            result = result->prev;
+        }
+
+        result = add(reverse(result), temp);
+        n2 = n2->next;
+        new_temp=NULL;
+        node *n3 = n2;
+        while (n3 != NULL && n3->prev != NULL && n3->prev->data != -1) {
+            insertright(&new_temp, 0);
+            n3 = n3->prev;
+        }
     }
 
-    return add(l8, l9);
+    // Now you can use new_temp outside the loop if needed
+
+    return result;
 }
+
 
 
 int main() {
