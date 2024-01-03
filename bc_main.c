@@ -327,8 +327,8 @@ node *sub(node *l1, node *l2)
 
 node *mul(node *l1, node *l2) {
     node *result = NULL;
-    node *decimalresult = NULL;
     node *n2 = l2;
+    node *nn = l2;
     node *new_temp = NULL; // Declare new_temp outside the loop
 
     while (n2) {
@@ -364,16 +364,28 @@ node *mul(node *l1, node *l2) {
 
         result = add(reverse(result), temp);
         n2 = n2->next;
+        nn = nn->next;
+        node *n3 = nn;
         new_temp=NULL;
-        node *n3 = n2;
-        while (n3 != NULL && n3->prev != NULL && n3->prev->data != -1) {
+        while (n3 != NULL && n3->prev != NULL) {
             insertright(&new_temp, 0);
             n3 = n3->prev;
         }
     }
-
+     node * x = result;
     // Now you can use new_temp outside the loop if needed
-
+    int total_count = count(&l1) + count(&l2);
+    while(total_count!=0)
+    {
+    	x=x->next;
+    	total_count--;
+    }
+    node * z = NULL;
+    node * y = x->next;
+    insert_decimal_point(&z);
+    x->next = z;
+    z->next = y;
+    
     return result;
 }
 
