@@ -24,6 +24,7 @@ void insertleft(node **head, int d) {
         (*head)->prev = newnode;
     }
     *head = newnode;
+    return;
 }
 
 void insertright(node **head, int d) {
@@ -79,7 +80,6 @@ void insert_negative(node **head) {
     *head = newnode;
     return;
 }
-
 
 node *reverse(node *head) {
     node *prev = NULL;
@@ -210,7 +210,7 @@ node *sub(node *l1, node *l2)
     	l6=l6->next;
     }
     int borrow = 0;
-    if(l5->next || l5->data > l6->data)
+    if(l5->next)
     {
     	while (l1 && l2)
     	{
@@ -233,35 +233,24 @@ node *sub(node *l1, node *l2)
             	insertleft(&l4, borrow);
             	l1 = l1->next;
             	l2 = l2->next;
-    	    	if (l1->data ==-1 )
-    	    	{
-    	    		insert_decimal_point(&l4);
-        		l1 = l1->next;
-        		l2 = l2->next;
-        		l1->data = l1->data -1;
-            	}
-            	else if (l1 != NULL) 
-            	{
-        		l1->data = l1->data - 1;
-    	    	}
+            	if(l2->data == -1)
+           	        {
+           	        	insert_decimal_point(&l4);
+           	        	l1=l1->next;
+           	        	l2=l2->next;
+           	        }
+        	l1->data = l1->data -1;
             }
         }
         while(l1)
         {
-        	if(l5->data < l6->data && l1->next==NULL)
-        	{
-        		insertleft(&l4, l1->data);
-        	}
-        	else
-        	{
-        		insertleft(&l4, l1->data);
-        	}
+                insertleft(&l4, l1->data);
         	l1=l1->next;
         }
         return l4;
    }
     	
-   else if(l6->next || l5->data <= l6->data || (l5->prev->data < l6->prev->data && l5->data==l6->data))
+   else if(l6->next)
    {
     while (l1 && l2)
     {
@@ -270,7 +259,7 @@ node *sub(node *l1, node *l2)
             			// Handle the case where either l1 or l2 is NULL
             	break;
         	}
-    		if (l1->data == -1 || l2->data ==-1)
+    		if (l1->data == -1 && l2->data ==-1)
     		{
         		insert_decimal_point(&l4);
         		l1 = l1->next;
@@ -289,40 +278,104 @@ node *sub(node *l1, node *l2)
             		insertleft(&l4, borrow);
             		l1 = l1->next;
            	        l2 = l2->next;
-    	  		if (l2->data ==-1 )
-    	    		{
-    	    			insert_decimal_point(&l4);
-        			l1 = l1->next;
-        			l2 = l2->next;
-        			l2->data = l2->data -1;
-            		}
-            		else if (l2 != NULL) 
-            		{
-        			l2->data = l2->data - 1;
-    	    		}
-        	}
+           	        if(l2->data == -1)
+           	        {
+           	        	insert_decimal_point(&l4);
+           	        	l1=l1->next;
+           	        	l2=l2->next;
+           	        }
+           	        l2->data = l2->data -1;
+                }
     	}
     	while(l2)
         {
-        	if(l5->data > l6->data && l2->next==NULL)
-        	{
-        		insertleft(&l4, l2->data);
-        	}
-        	else
-        	{
-        		insertleft(&l4, l2->data);
-        	}
+        	
+        	insertleft(&l4, l2->data);
         	l2=l2->next;
         }
         insert_negative(&l4);
-    	
-    			
-    return l4;
+        return l4;
     }
-    
+    else if (l5->next == NULL && l6->next == NULL)
+    {
+    	if(l5->data > l6->data || (l5->data == l6->data && l5->prev->data > l6->prev->data))
+    	{
+	while (l1 && l2)
+    	{
+    	    if (l1->data == -1 && l2->data ==-1)
+    	    {
+        	insert_decimal_point(&l4);
+        	l1 = l1->next;
+        	l2 = l2->next;
+    	    } 
+        		
+            else if (l1->data >= l2->data)
+        	{
+            	insertleft(&l4, l1->data - l2->data);
+            	l1 = l1->next;
+            	l2 = l2->next;
+        	}
+            else if (l1->data < l2->data)
+            {
+            	borrow = l1->data - l2->data + 10;
+            	insertleft(&l4, borrow);
+            	l1 = l1->next;
+            	l2 = l2->next;
+            	if(l2->data == -1)
+           	        {
+           	        	insert_decimal_point(&l4);
+           	        	l1=l1->next;
+           	        	l2=l2->next;
+           	        }
+        	l1->data = l1->data -1;
+            }
+        }
+        return l4;
+        }
+        else if ( l6->data >= l5->data )
+        {
+        while (l1 && l2)
+        {
+        	if (l1 == NULL || l2 == NULL)
+       		{
+            			// Handle the case where either l1 or l2 is NULL
+            	break;
+        	}
+    		if (l1->data == -1 && l2->data ==-1)
+    		{
+        		insert_decimal_point(&l4);
+        		l1 = l1->next;
+        		l2 = l2->next;
+    		} 
+    				
+    		else if (l2->data >= l1->data)
+        	{
+            		insertleft(&l4, l2->data - l1->data);
+           		l2 = l2->next;
+        		l1 = l1->next;
+        	}
+        	else if (l2->data < l1->data)
+        	{
+           		borrow = l2->data - l1->data + 10;
+            		insertleft(&l4, borrow);
+            		l1 = l1->next;
+           	        l2 = l2->next;
+           	        if(l2->data == -1 && l1->data == -1)
+           	        {
+           	        	insert_decimal_point(&l4);
+           	        	l1=l1->next;
+           	        	l2=l2->next;
+           	        }
+           	        l2->data = l2->data -1;
+        	}
+    	}
+    	insert_negative(&l4);
+    	return l4;
+    	} 
     	
-}
+    }
 
+}
 
 
 node *mul(node *l1, node *l2) {
@@ -372,10 +425,13 @@ node *mul(node *l1, node *l2) {
             n3 = n3->prev;
         }
     }
-     node * x = result;
     // Now you can use new_temp outside the loop if needed
     int total_count = count(&l1) + count(&l2);
-    while(total_count!=0)
+    node *x;
+    if(total_count > 0)
+    x = reverse(result);
+    {
+    while(total_count > 1)
     {
     	x=x->next;
     	total_count--;
@@ -385,10 +441,16 @@ node *mul(node *l1, node *l2) {
     insert_decimal_point(&z);
     x->next = z;
     z->next = y;
-    
+    z->prev = x;
+    y->prev = z;
+    while(x->prev)
+    {
+    	x = x->prev;
+    } 
+    result = reverse(x);
+    }
     return result;
 }
-
 
 
 int main() {
