@@ -1,19 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "bc_logic.c"
+//#include "bc_logic.c"
 #include "infixtopostfix.c"
 #include <ctype.h>
-//#include "postfix.c"
+#include "postfix.c"
 
 int main() 
 {
-    number  l1, l2, l3, l4, l5;
-    init(&l1);
-    init(&l2);
-    char str[100000] = "123.456 + (29.34 * 23.34) + 10 * 10";
+    char str[10000] = "129438.4 - (48656.78 * 443.67) + 845573.78923 + 8943993.73059847";
     stack s;
     init1(&s,10000);
-    char  postfix[10000];
+    char * postfix = (char*)malloc(sizeof(char)*10000);
     int j = 0;
     char c;
     int i=0;
@@ -63,12 +60,10 @@ int main()
     
     
     }
-    const char* postfix_expression = {"123.456 29.34 23.34 * + 10 10 * + "};
-    int result = evaluate_postfix(postfix_expression);
-    printf("Result of %s is: %d\n", postfix_expression, result);
-
-    
-    
-
+    printf("\n");
+     char * postfix_expression = postfix;
+     number result = evaluate_postfix(postfix_expression);
+     printf("\n");
+     displayRL(result);
     return 0;
 }
